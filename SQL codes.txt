@@ -1,0 +1,79 @@
+create table login (
+	login_id int not null primary key auto_increment,
+    user_name varchar(50) not null,
+    user_password varchar(50) not null
+);
+
+
+create table person (
+	person_id int not null primary key auto_increment,
+    first_name varchar(50),
+    last_name varchar(50),
+    phone varchar(50),
+    address varchar(50),
+    dob datetime
+);
+
+create table patient(
+	patient_id int not null,
+    foreign key (person_id) references person(person_id),
+    time_created datetime
+);
+
+
+
+create table physician (
+	physician_id int not null,
+    foreign key (physician_id) references person(person_id),
+    expertise varchar(50)
+);
+
+insert into physician set expertise = "Allergist", physician_id = (select person_id from person where first_name = "John");
+insert into physician set expertise = "Dermatologist", physician_id = (select person_id from person where first_name = "Tram");
+insert into physician set expertise = "Hematologist", physician_id = (select person_id from person where first_name = "Ken");
+insert into physician set expertise = "Neurologist", physician_id = (select person_id from person where first_name = "Amme");
+insert into physician set expertise = "Ophthalmologist", physician_id = (select person_id from person where first_name = "Alex");
+insert into physician set expertise = "Pediatrician", physician_id = (select person_id from person where first_name = "John" and last_name="Legion");
+
+
+create table availability (
+	availability_id int not null primary key auto_increment,
+    physician_id int not null,
+    foreign key (physician_id) references physician(physician_id),
+    app_date date not null,
+    start_time time not null,
+    end_time time not null
+);
+
+INSERT INTO person (first_name,last_name,phone,address,dob) VALUES ("John","Talor", "714-111-1111","1234 Santa Ana St", "1999-01-01 07:00:00");
+INSERT INTO person (first_name,last_name,phone,address,dob) VALUES ("Amme","Kim", "714-222-2222","4321 Adam Ave", "1998-02-02 07:00:00");
+INSERT INTO person (first_name,last_name,phone,address,dob) VALUES ("Alex","Thombson", "714-333-3333","5678 Bushard St", "1997-03-03 07:00:00");
+INSERT INTO person (first_name,last_name,phone,address,dob) VALUES ("Tram","Huynh", "714-444-4444","8765 Temple St", "1996-04-04 07:00:00");
+INSERT INTO person (first_name,last_name,phone,address,dob) VALUES ("Ken","Maphew", "714-555-5555","19191 Bolsa St", "1995-05-05 07:00:00");
+INSERT INTO person (first_name,last_name,phone,address,dob) VALUES ("John","Legion", "714-666-6666","56231 Bolsa St", "1994-06-06 07:00:00");
+
+insert into availability set app_date = "2021-11-30", start_time = "09:15:00", end_time = "10:00:00", physician_id = (select physician_id from physician where physician_id = 1);
+insert into availability set app_date = "2021-11-30", start_time = "10:15:00", end_time = "11:00:00", physician_id = (select physician_id from physician where physician_id = 1);
+insert into availability set app_date = "2021-11-30", start_time = "11:15:00", end_time = "12:00:00", physician_id = (select physician_id from physician where physician_id = 1);
+insert into availability set app_date = "2021-11-30", start_time = "13:15:00", end_time = "14:00:00", physician_id = (select physician_id from physician where physician_id = 2);
+insert into availability set app_date = "2021-11-30", start_time = "14:15:00", end_time = "15:00:00", physician_id = (select physician_id from physician where physician_id = 2);
+insert into availability set app_date = "2021-11-30", start_time = "15:15:00", end_time = "16:00:00", physician_id = (select physician_id from physician where physician_id = 2);
+insert into availability set app_date = "2021-11-30", start_time = "16:15:00", end_time = "17:00:00", physician_id = (select physician_id from physician where physician_id = 3);
+
+insert into availability set app_date = "2021-11-30", start_time = "09:15:00", end_time = "10:00:00", physician_id = (select physician_id from physician where physician_id = 4);
+insert into availability set app_date = "2021-11-30", start_time = "10:15:00", end_time = "11:00:00", physician_id = (select physician_id from physician where physician_id = 4);
+insert into availability set app_date = "2021-11-30", start_time = "11:15:00", end_time = "12:00:00", physician_id = (select physician_id from physician where physician_id = 5);
+insert into availability set app_date = "2021-11-30", start_time = "13:15:00", end_time = "14:00:00", physician_id = (select physician_id from physician where physician_id = 5);
+insert into availability set app_date = "2021-11-30", start_time = "14:15:00", end_time = "15:00:00", physician_id = (select physician_id from physician where physician_id = 5);
+insert into availability set app_date = "2021-11-30", start_time = "15:15:00", end_time = "16:00:00", physician_id = (select physician_id from physician where physician_id = 6);
+insert into availability set app_date = "2021-11-30", start_time = "16:15:00", end_time = "17:00:00", physician_id = (select physician_id from physician where physician_id = 6);
+
+create table appointment (
+	patient_id int not null,
+    foreign key (patient_id) references patient(patient_id),
+    physician_id int not null,
+    foreign key (physician_id) references availability(physician_id),
+    availability_id int not null,
+    foreign key (availability_id) references availability(availability_id),
+	reason varchar(50)
+);
